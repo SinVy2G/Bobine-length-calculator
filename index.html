@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bobine Length Calculator — afitexinov</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:       #c0452a;
+    --red-lt:    #d05535;
+    --red-pale:  rgba(192,69,42,0.08);
+    --red-border:rgba(192,69,42,0.25);
+    --gray:      #6b6b6b;
+    --gray-dark: #444444;
+    --gray-light:#9a9a9a;
+    --bg:        #ffffff;
+    --white:     #ffffff;
+    --border:    #e0e0e0;
+    --border2:   #d0d0d0;
+    --text:      #333333;
+    --text-sm:   #666666;
+    --shadow:    rgba(0,0,0,0.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Open Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--white);
+    border-bottom: 3px solid var(--red);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+
+  /* Logo recreation matching exact brand */
+  .logo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 2px;
+  }
+
+  .logo-main {
+    font-family: 'Raleway', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .logo-main .afitex { color: var(--red); }
+  .logo-main .inov   { color: var(--gray); }
+
+  .logo-sub {
+    font-family: 'Raleway', sans-serif;
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    padding-left: 2px;
+  }
+
+  .header-right {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    color: var(--gray-light);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.5;
+  }
+
+  /* ── WRAPPER ── */
+  .wrapper {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 36px 18px 64px;
+  }
+
+  /* ── PAGE HEADING ── */
+  .page-heading {
+    margin-bottom: 28px;
+    border-left: 4px solid var(--red);
+    padding-left: 14px;
+  }
+
+  .page-heading h1 {
+    font-family: 'Raleway', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-dark);
+    letter-spacing: 0.3px;
+  }
+
+  .page-heading p {
+    font-size: 13px;
+    color: var(--gray-light);
+    margin-top: 4px;
+  }
+
+  /* ── FORMULA CARD ── */
+  .formula-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  .f-title {
+    font-family: 'Raleway', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    margin-bottom: 8px;
+  }
+
+  .f-eq {
+    font-family: 'Raleway', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--gray-dark);
+  }
+
+  .f-eq em {
+    color: var(--red);
+    font-style: normal;
+  }
+
+  .f-ex {
+    margin-top: 7px;
+    font-size: 12px;
+    color: var(--gray-light);
+    padding-top: 7px;
+    border-top: 1px solid var(--border);
+  }
+
+  .f-ex strong { color: var(--gray); }
+
+  /* ── CALC CARD ── */
+  .calc-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px var(--shadow);
+  }
+
+  .card-head {
+    background: var(--gray-dark);
+    padding: 12px 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-head-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  .card-head-label {
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .card-body {
+    padding: 28px 26px 30px;
+  }
+
+  /* ── INPUTS ── */
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+
+  @media(max-width: 460px) {
+    .input-grid { grid-template-columns: 1fr; }
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .input-group label {
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray-light);
+  }
+
+  .input-row {
+    display: flex;
+    align-items: stretch;
+    background: var(--bg);
+    border: 1.5px solid var(--border2);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .input-row:focus-within {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px var(--red-border);
+    background: var(--white);
+  }
+
+  input[type="number"] {
+    flex: 1;
+    background: transparent;
+    border: none; outline: none;
+    color: var(--gray-dark);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    padding: 13px 15px;
+    width: 100%;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .unit-tag {
+    display: flex; align-items: center;
+    padding: 0 14px;
+    border-left: 1.5px solid var(--border2);
+    font-family: 'Raleway', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--red);
+    background: var(--red-pale);
+    white-space: nowrap;
+  }
+
+  /* ── BUTTON ── */
+  .calc-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--red);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'Raleway', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 14px rgba(192,69,42,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .calc-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    transition: left 0.4s;
+  }
+
+  .calc-btn:hover {
+    background: var(--red-lt);
+    box-shadow: 0 5px 20px rgba(192,69,42,0.4);
+    transform: translateY(-1px);
+  }
+  .calc-btn:hover::after { left: 160%; }
+  .calc-btn:active { transform: translateY(0); }
+
+  /* ── ERROR ── */
+  .error-box {
+    margin-top: 14px;
+    background: var(--red-pale);
+    border: 1px solid var(--red-border);
+    border-radius: 6px;
+    padding: 11px 16px;
+    font-size: 12px;
+    color: var(--red);
+    text-align: center;
+    display: none;
+    font-weight: 600;
+  }
+
+  /* ── RESULT ── */
+  .result-wrap {
+    margin-top: 20px;
+    display: none;
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .result-card {
+    background: var(--gray-dark);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .result-stripe {
+    height: 4px;
+    background: var(--red);
+  }
+
+  .result-inner {
+    padding: 22px 24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .res-label {
+    font-family: 'Raleway', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    margin-bottom: 6px;
+  }
+
+  .res-number {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+    font-size: 64px;
+    color: #ffffff;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .res-unit {
+    font-family: 'Raleway', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .res-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .res-chip {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 4px;
+    padding: 6px 13px;
+    font-size: 12px;
+    color: #ccc;
+    white-space: nowrap;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .res-chip b { color: #fff; }
+
+  /* ── HISTORY ── */
+  .history-section { margin-top: 28px; }
+
+  .hist-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .hist-head-label {
+    font-family: 'Raleway', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    white-space: nowrap;
+  }
+
+  .hist-line { flex:1; height:1px; background:var(--border2); }
+
+  .clear-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    color: var(--gray-light);
+    font-family: 'Raleway', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .hist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+
+  .hist-list::-webkit-scrollbar { width: 3px; }
+  .hist-list::-webkit-scrollbar-track { background: transparent; }
+  .hist-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .h-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 11px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 4px var(--shadow);
+    animation: fadeUp 0.2s ease;
+  }
+
+  .h-left {
+    font-size: 13px;
+    color: var(--gray-light);
+  }
+  .h-left strong { color: var(--gray-dark); }
+
+  .h-right { text-align: right; flex-shrink: 0; }
+
+  .h-metres {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--gray-dark);
+  }
+
+  .h-unit {
+    font-family: 'Raleway', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+
+  .no-hist {
+    text-align: center;
+    font-size: 12px;
+    color: var(--gray-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 22px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+  }
+
+  /* ── TITRE SPLIT ── */
+  .titre-split {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .titre-split .input-row {
+    flex: 1;
+  }
+
+  .titre-split input[type="number"] {
+    font-size: 22px;
+    padding: 13px 10px;
+  }
+
+  .times-badge {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    background: var(--red);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Raleway', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(192,69,42,0.3);
+    flex-shrink: 0;
+  }
+
+  .titre-result-tag {
+    flex-shrink: 0;
+    padding: 0 12px;
+    height: 54px;
+    display: flex; align-items: center;
+    background: var(--red-pale);
+    border: 1.5px solid var(--red-border);
+    border-radius: 6px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--red);
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    min-width: 70px;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  @media(max-width: 460px) {
+    .res-number { font-size: 48px; }
+    .res-chips { align-items: flex-start; }
+    .header-right { display: none; }
+    .site-header { padding: 0 18px; }
+    .titre-result-tag { min-width: 58px; font-size: 10px; }
+  }
+
+  .kg-display {
+    font-size: 12px;
+    color: var(--gray-light);
+    margin-top: 5px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    min-height: 16px;
+  }
+
+  .kg-display span {
+    color: var(--red);
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="site-header">
+  <div class="logo">
+    <div class="logo-main">
+      <span class="afitex">afitex</span><span class="inov">inov</span>
+    </div>
+    <div class="logo-sub">Geosynthetics</div>
+  </div>
+  <div class="header-right">
+    Production Tool<br>
+    <span style="color:var(--red);font-weight:600;">Bobine Calculator</span>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <!-- PAGE HEADING -->
+  <div class="page-heading">
+    <h1>Bobine Length Calculator</h1>
+    <p>Remaining yarn length on geotextile bobine</p>
+  </div>
+
+  <!-- FORMULA HIDDEN -->
+
+  <!-- CALCULATOR -->
+  <div class="calc-card">
+    <div class="card-head">
+      <div class="card-head-dot"></div>
+      <span class="card-head-label">Enter Parameters</span>
+    </div>
+    <div class="card-body">
+
+      <div class="input-grid">
+        <div class="input-group">
+          <label>Bobine Weight</label>
+          <div class="input-row">
+            <input type="number" id="inp-weight" placeholder="160" min="0" step="0.01" oninput="updateKg()">
+            <div class="unit-tag">g</div>
+          </div>
+          <div class="kg-display" id="kg-display"></div>
+        </div>
+
+        <div class="input-group">
+          <label>Titre</label>
+          <div class="titre-split">
+            <div class="input-row">
+              <input type="number" id="inp-titre-a" placeholder="2" min="0" step="1">
+            </div>
+            <div class="times-badge">×</div>
+            <div class="input-row">
+              <input type="number" id="inp-titre-b" placeholder="4400" min="0" step="1">
+            </div>
+            <div class="titre-result-tag">dtex</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calculate()">Calculate Length</button>
+
+      <div class="error-box" id="error-box">
+        ⚠ &nbsp; Please enter valid values for both Weight and Titre.
+      </div>
+
+      <div class="result-wrap" id="result-wrap">
+        <div class="result-card">
+          <div class="result-stripe"></div>
+          <div class="result-inner">
+            <div>
+              <div class="res-label">Length Remaining</div>
+              <div class="res-number" id="res-number">—</div>
+              <div class="res-unit">Metres</div>
+            </div>
+            <div class="res-chips" id="res-chips"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="history-section">
+    <div class="hist-head">
+      <span class="hist-head-label">History</span>
+      <div class="hist-line"></div>
+      <button class="clear-btn" onclick="clearHistory()">Clear</button>
+    </div>
+    <div class="hist-list" id="hist-list">
+      <div class="no-hist">No calculations yet</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let calcHistory = [];
+
+  function fmt(n) {
+    return parseFloat(n.toFixed(3)).toLocaleString('fr-FR', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 3
+    });
+  }
+
+  function updateKg() {
+    const w = parseFloat(document.getElementById('inp-weight').value);
+    const el = document.getElementById('kg-display');
+    if (w > 0) {
+      el.innerHTML = '= <span>' + fmt(w / 1000) + ' kg</span>';
+    } else {
+      el.innerHTML = '';
+    }
+  }
+
+  function calculate() {
+    const weight = parseFloat(document.getElementById('inp-weight').value);
+    const titreA = parseFloat(document.getElementById('inp-titre-a').value);
+    const titreB = parseFloat(document.getElementById('inp-titre-b').value);
+    const titre  = titreA * titreB;
+    const errBox  = document.getElementById('error-box');
+    const resWrap = document.getElementById('result-wrap');
+
+    errBox.style.display = 'none';
+    resWrap.style.display = 'none';
+
+    if (!weight || !titreA || !titreB || weight <= 0 || titreA <= 0 || titreB <= 0) {
+      errBox.style.display = 'block';
+      return;
+    }
+
+    const length = (weight * 10000) / titre;
+
+    resWrap.style.display = 'none';
+    void resWrap.offsetWidth;
+    resWrap.style.display = 'block';
+
+    document.getElementById('res-number').textContent = fmt(length);
+    document.getElementById('res-chips').innerHTML = `
+      <div class="res-chip">Weight: <b>${weight} g (${fmt(weight/1000)} kg)</b></div>
+      <div class="res-chip">Titre: <b>${titreA} × ${titreB} = ${fmt(titre)} dtex</b></div>
+    `;
+
+    calcHistory.unshift({ weight, titreA, titreB, titre, length });
+    if (calcHistory.length > 20) calcHistory.pop();
+    renderHistory();
+  }
+
+  function clearHistory() {
+    calcHistory = [];
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('hist-list');
+    if (calcHistory.length === 0) {
+      list.innerHTML = '<div class="no-hist">No calculations yet</div>';
+      return;
+    }
+    list.innerHTML = calcHistory.map(h => `
+      <div class="h-item">
+        <div class="h-left">
+          <strong>${h.weight} g</strong> &nbsp;·&nbsp; <strong>${h.titreA}</strong> × <strong>${h.titreB}</strong>
+        </div>
+        <div class="h-right">
+          <div class="h-metres">${fmt(h.length)}</div>
+          <div class="h-unit">m</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+</body>
+</html>
